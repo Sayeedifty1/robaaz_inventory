@@ -1,11 +1,17 @@
-import  { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const InvoiceGenerator = ({ productData }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProducts, setSelectedProducts] = useState([]); // Use an array to store selected products
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
-  // Function to handle product search
+  useEffect(() => {
+    const savedSelectedProducts = JSON.parse(localStorage.getItem('selectedProducts'));
+    if (savedSelectedProducts) {
+      setSelectedProducts(savedSelectedProducts);
+    }
+  }, []);
+
   const handleSearch = () => {
     const filteredProducts = productData.filter((product) =>
       product.productName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -13,12 +19,29 @@ const InvoiceGenerator = ({ productData }) => {
     setSearchResults(filteredProducts);
   };
 
-  // Function to set the selected product in the state
   const selectProduct = (product) => {
-    // Add the selected product to the selectedProducts array
     setSelectedProducts([...selectedProducts, product]);
-    console.log('Selected Product:', product);
+    localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, product]));
   };
+
+  const handleUnitsChange = (product, units) => {
+    const updatedProducts = selectedProducts.map((p) => {
+      if (p._id === product._id) {
+        return {
+          ...p,
+          units,
+          totalPrice: units * p.price,
+        };
+      }
+      return p;
+    });
+
+    setSelectedProducts(updatedProducts);
+    localStorage.setItem('selectedProducts', JSON.stringify(updatedProducts));
+  };
+
+  // Calculate the total price by summing up the total prices of selected products
+  const totalInvoicePrice = selectedProducts.reduce((total, product) => total + (product.totalPrice || 0), 0);
 
   return (
     <div>
@@ -30,7 +53,7 @@ const InvoiceGenerator = ({ productData }) => {
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
-          handleSearch(); // Trigger search as you type
+          handleSearch();
         }}
       />
       <h3>Search Results</h3>
@@ -41,7 +64,35 @@ const InvoiceGenerator = ({ productData }) => {
           </li>
         ))}
       </ul>
-      <p>Added products: {selectedProducts.length}</p> {/* Use selectedProducts.length to count selected products */}
+      <h3>Selected Products</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Units</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedProducts.map((product) => (
+            <tr key={product._id}>
+              <td>{product.productName}</td>
+              <td>{product.price}</td>
+              <td>
+                <input
+                className='text-center'
+                  type="number"
+                  value={product.units || 0}
+                  onChange={(e) => handleUnitsChange(product, parseInt(e.target.value, 10))}
+                />
+              </td>
+              <td>{product.totalPrice || 0}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p>Total Price: {totalInvoicePrice}</p> {/* Display the total invoice price */}
     </div>
   );
 };
