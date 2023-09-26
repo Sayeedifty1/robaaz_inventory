@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form input {
+  display: block;
+  margin-bottom: 0.5rem;
+  border: 1px solid #071527;
+  border-radius: 0.25rem;
+  padding: 0.1rem;
+}
+.form{
+    width: 400px;
+    margin: 0 auto;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+}
+
