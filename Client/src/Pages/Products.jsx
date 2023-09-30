@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
-import DataTable from 'react-data-table-component'; // You may need to install this library
+import  { useState, useEffect } from 'react';
+import DataTable from 'react-data-table-component';
 import InvoiceGenerator from './InvoiceGenerator';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [editModalVisible, setEditModalVisible] = useState(false);
-
+    const [editingProduct, setEditingProduct] = useState({
+        
+        productName: '',
+        SKU: '',
+        quantity: 0,
+        price: 0,
+    });
 
     // Function to fetch products from the database
     const fetchProducts = async () => {
@@ -66,13 +72,54 @@ const Products = () => {
     ];
 
     const handleEdit = (product) => {
-        // Implement the edit functionality, e.g., open a modal or navigate to an edit page
-        console.log('Edit product:', product);
+        // Set the editing product when the "Edit" button is clicked
+        setEditingProduct(product);
         setEditModalVisible(true);
     };
+
     const handleClose = () => {
+        // Clear the editing product and close the modal
+        setEditingProduct({
+            _id: '',
+            productName: '',
+            SKU: '',
+            quantity: 0,
+            price: 0,
+        });
         setEditModalVisible(false);
     };
+
+    const handleUpdateProduct = async () => {
+        // Create an object containing only the fields to be updated
+        const updatedFields = {
+            productName: editingProduct.productName,
+            SKU: editingProduct.SKU,
+            quantity: parseInt(editingProduct.quantity, 10), // Convert to integer
+            price: parseFloat(editingProduct.price), // Convert to float
+        };
+    
+        try {
+            const response = await fetch(`http://localhost:5000/updateProduct/${editingProduct._id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedFields), // Send only the fields to be updated
+            });
+    
+            if (response.ok) {
+                console.log('Product updated successfully');
+                alert('Product updated successfully');
+                fetchProducts(); // Refresh the product list after the update
+                setEditModalVisible(false); // Close the modal
+            } else {
+                console.error('Failed to update product');
+            }
+        } catch (error) {
+            console.error('An error occurred while updating product:', error);
+        }
+    };
+    
 
     const handleDelete = async (product) => {
         try {
@@ -94,7 +141,6 @@ const Products = () => {
         }
     };
 
-
     const handleSelect = (product) => {
         // Implement the select functionality, e.g., update the selected state for the product
         console.log('Select product:', product);
@@ -103,40 +149,65 @@ const Products = () => {
     return (
         <div className='relative'>
             <h3 className="text-center text-3xl font-bold my-12">Products</h3>
-            {editModalVisible &&
+            {editModalVisible && (
                 <div className=" w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
                     <div className="card-body">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Product Name</span>
                             </label>
-                            <input type="text" placeholder="product Name" className="input input-bordered" />
+                            <input
+                                type="text"
+                                placeholder="product Name"
+                                className="input input-bordered"
+                                value={editingProduct.productName}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, productName: e.target.value })}
+                            />
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">SKU</span>
                             </label>
-                            <input type="text" placeholder="SKU" className="input input-bordered" />
+                            <input
+                                type="text"
+                                placeholder="SKU"
+                                className="input input-bordered"
+                                value={editingProduct.SKU}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, SKU: e.target.value })}
+                            />
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Quantity</span>
                             </label>
-                            <input type="number" placeholder="Quantity" className="input input-bordered" />
+                            <input
+                                type="number"
+                                placeholder="Quantity"
+                                className="input input-bordered"
+                                value={editingProduct.quantity}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, quantity: e.target.value })}
+                            />
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Price</span>
                             </label>
-                            <input type="number" placeholder="price" className="input input-bordered" />
+                            <input
+                                type="number"
+                                placeholder="Price"
+                                className="input input-bordered"
+                                value={editingProduct.price}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                            />
                         </div>
                         <div className="form-control mt-6">
-                            <button className="">Update Product</button>
+                            <button onClick={handleUpdateProduct} className="">Update Product</button>
                             <button onClick={handleClose} className="">Close Modal</button>
                         </div>
                     </div>
+                </div>
+            )}
 
-                </div>}
             <DataTable
                 columns={columns}
                 data={products}
@@ -144,9 +215,9 @@ const Products = () => {
                 selectableRows // Enable row selection
                 selectableRowsHighlight // Highlight selected rows
             />
-            <InvoiceGenerator
+            {/* <InvoiceGenerator
             productData={products}
-            />
+            /> */}
         </div>
     );
 };

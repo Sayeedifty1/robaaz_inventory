@@ -80,6 +80,31 @@ async function run() {
                 })
         });
 
+        // updating a product
+        app.patch('/updateProduct/:id', async (req, res) => {
+            const id = new ObjectId(req.params.id);
+            const updatedProduct = req.body;
+
+            try {
+                console.log('Received PATCH request with data:', updatedProduct); // Log the received data
+
+                const result = await productCollection.updateOne(
+                    { _id: id },
+                    { $set: updatedProduct }
+                );
+
+                console.log('MongoDB Update Result:', result); // Log the MongoDB update result
+
+                if (result.modifiedCount > 0) {
+                    res.send({ success: true, message: 'Product updated successfully' });
+                } else {
+                    res.send({ success: false, message: 'No product was updated' });
+                }
+            } catch (error) {
+                console.error('Error updating product:', error);
+                res.status(500).send({ success: false, message: 'An error occurred while updating the product' });
+            }
+        });
 
 
 
