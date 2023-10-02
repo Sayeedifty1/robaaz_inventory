@@ -2,6 +2,7 @@ import {
     createBrowserRouter,
    
   } from "react-router-dom";
+import InvoiceGenerator from "../Pages/InvoiceGenerator";
 import Products from "../Pages/Products";
 import UploadProduct from "../Pages/UploadProduct";
 
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
     {
       path: "/products",
       element: <Products/>,
+    },
+    {
+      path: "/invoice",
+      element: <InvoiceGenerator/>,
     }
   ]);
 
