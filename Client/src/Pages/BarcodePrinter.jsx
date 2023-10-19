@@ -1,9 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Barcode from 'react-barcode';
-import ReactToPrint from 'react-to-print';
 
 const BarcodePrinter = () => {
-
     const ref = useRef();
     const [product, setProduct] = useState(null);
 
@@ -15,23 +13,39 @@ const BarcodePrinter = () => {
         }
     }, []);
 
-    return (
-        <div className="barcode-print">
-            <div>
+    // Define the number of barcodes you want to display
+    const numBarcodes = 27; // Adjust based on your needs
+
+    // Create an array of JSX elements to represent the barcodes
+    const barcodeElements = [];
+
+    for (let i = 0; i < numBarcodes; i++) {
+        barcodeElements.push(
+            <> <div key={`barcode-${i}`} >
                 <Barcode
                     width={1}
-                    height={100}
+                    height={70}
                     format="CODE128"
-                    displayValue={true}
                     ref={ref}
                     value={product?.productName}
                 />
+
             </div>
-            <ReactToPrint
-                trigger={() => <button>Print Barcode</button>}
-                content={() => ref.current}
-                displayValue={false} // Hide the text display below the barcode
-            />
+
+            </>
+        );
+    }
+
+    const handlePrint = () => {
+        window.print();
+    };
+
+    return (
+        <div className="barcode-print">
+            <div className="grid grid-cols-3">
+                {barcodeElements}
+            </div>
+            <button className="print-button" onClick={handlePrint}>Print</button>
         </div>
     );
 };
