@@ -1,6 +1,5 @@
 import  { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import InvoiceGenerator from './InvoiceGenerator';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
@@ -12,6 +11,7 @@ const Products = () => {
         quantity: 0,
         price: 0,
     });
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     // Function to fetch products from the database
     const fetchProducts = async () => {
@@ -33,6 +33,7 @@ const Products = () => {
         fetchProducts();
     }, []);
 
+   
     const columns = [
         {
             name: 'SL No.',
@@ -63,13 +64,21 @@ const Products = () => {
             name: 'Actions',
             cell: (row) => (
                 <div className='flex gap-4 text-center'>
-                    <button className='p-1 bg-blue-500 text-white  rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
-                    <button className='p-1 bg-red-500 text-white  rounded-lg' onClick={() => handleDelete(row)}>Delete</button>
-                    <button className='p-1 bg-green-500 text-white  rounded-lg'>Bulk Print</button>
+                     <button className='p-1 bg-blue-500 text-white rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
+                    <button className='p-1 bg-red-500 text-white rounded-lg' onClick={() => handleDelete(row)}>Delete</button>
+                    <button className='p-1 bg-green-500 text-white rounded-lg' onClick={() => handleBulkPrint(row)}>Bulk Print</button>
                 </div>
             ),
         },
     ];
+    const handleBulkPrint = (product) => {
+        // Set the selected product for bulk print
+        setSelectedProduct(product);
+        localStorage.setItem('selectedProduct', JSON.stringify(selectedProduct));
+
+    };
+   
+
 
     const handleEdit = (product) => {
         // Set the editing product when the "Edit" button is clicked
@@ -146,6 +155,7 @@ const Products = () => {
     return (
         <div className='relative'>
             <h3 className="text-center text-3xl font-bold my-12">Products</h3>
+            
             {editModalVisible && (
                 <div className=" w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
                     <div className="card-body">

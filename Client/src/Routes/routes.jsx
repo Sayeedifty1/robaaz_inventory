@@ -2,6 +2,7 @@ import {
     createBrowserRouter,
    
   } from "react-router-dom";
+import BarcodePrinter from "../Pages/BarcodePrinter";
 import InvoiceGenerator from "../Pages/InvoiceGenerator";
 import Products from "../Pages/Products";
 import UploadProduct from "../Pages/UploadProduct";
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
     {
       path: "/invoice",
       element: <InvoiceGenerator/>,
+    },
+    {
+      path: "barcode",
+      element: <BarcodePrinter/>,
     }
   ]);
 
