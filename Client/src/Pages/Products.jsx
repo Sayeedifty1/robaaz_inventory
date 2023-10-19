@@ -62,10 +62,10 @@ const Products = () => {
         {
             name: 'Actions',
             cell: (row) => (
-                <div>
-                    <button onClick={() => handleEdit(row)}>Edit</button>
-                    <button onClick={() => handleDelete(row)}>Delete</button>
-                    <input type="checkbox" onChange={() => handleSelect(row)} />
+                <div className='flex gap-4 text-center'>
+                    <button className='p-1 bg-blue-500 text-white  rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
+                    <button className='p-1 bg-red-500 text-white  rounded-lg' onClick={() => handleDelete(row)}>Delete</button>
+                    <button className='p-1 bg-green-500 text-white  rounded-lg'>Bulk Print</button>
                 </div>
             ),
         },
@@ -141,10 +141,7 @@ const Products = () => {
         }
     };
 
-    const handleSelect = (product) => {
-        // Implement the select functionality, e.g., update the selected state for the product
-        console.log('Select product:', product);
-    };
+ 
 
     return (
         <div className='relative'>
@@ -203,6 +200,7 @@ const Products = () => {
                         <div className="form-control mt-6">
                             <button onClick={handleUpdateProduct} className="">Update Product</button>
                             <button onClick={handleClose} className="">Close Modal</button>
+                           
                         </div>
                     </div>
                 </div>
@@ -212,8 +210,6 @@ const Products = () => {
                 columns={columns}
                 data={products}
                 pagination
-                selectableRows // Enable row selection
-                selectableRowsHighlight // Highlight selected rows
             />
             {/* <InvoiceGenerator
             productData={products}
