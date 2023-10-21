@@ -4,17 +4,21 @@ import Barcode from 'react-barcode';
 const BarcodePrinter = () => {
     const ref = useRef();
     const [product, setProduct] = useState(null);
-
+    const [barcodeCount, setBarcodeCount] = useState(null);
     // Function to fetch product data from local storage
     useEffect(() => {
         const storedProduct = JSON.parse(localStorage.getItem('selectedProduct'));
         if (storedProduct) {
             setProduct(storedProduct);
         }
+        const storedBarcodeCount = localStorage.getItem('barcodeCount');
+        if (storedBarcodeCount) {
+            setBarcodeCount(storedBarcodeCount);
+        }
     }, []);
-
+    console.log(barcodeCount)
     // Define the number of barcodes you want to display
-    const numBarcodes = 27; // Adjust based on your needs
+    const numBarcodes = barcodeCount;
 
     // Create an array of JSX elements to represent the barcodes
     const barcodeElements = [];
@@ -38,6 +42,8 @@ const BarcodePrinter = () => {
 
     const handlePrint = () => {
         window.print();
+        localStorage.removeItem('selectedProduct');
+        localStorage.removeItem('barcodeCount');
     };
 
     return (

@@ -1,11 +1,11 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [editingProduct, setEditingProduct] = useState({
-        
+
         productName: '',
         SKU: '',
         quantity: 0,
@@ -33,7 +33,7 @@ const Products = () => {
         fetchProducts();
     }, []);
 
-   
+
     const columns = [
         {
             name: 'SL No.',
@@ -64,20 +64,36 @@ const Products = () => {
             name: 'Actions',
             cell: (row) => (
                 <div className='flex gap-4 text-center'>
-                     <button className='p-1 bg-blue-500 text-white rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
+                    <button className='p-1 bg-blue-500 text-white rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
                     <button className='p-1 bg-red-500 text-white rounded-lg' onClick={() => handleDelete(row)}>Delete</button>
-                    <button className='p-1 bg-green-500 text-white rounded-lg' onClick={() => handleBulkPrint(row)}>Bulk Print</button>
+
                 </div>
             ),
         },
+        {
+            name: 'Barcode Generate',
+            cell: (row) => (
+                <div className='flex gap-2 text-center'>
+                    <input type="number" className='w-10 border border-black p-1 rounded-md' name={`barcodeCount-${row._id}`} />
+                    <button className='p-1 bg-green-500 text-white rounded-lg' onClick={() => handleBulkPrint(row)}>Bulk Print</button>
+                </div>
+            ),
+        }
     ];
     const handleBulkPrint = (product) => {
         // Set the selected product for bulk print
         setSelectedProduct(product);
-        localStorage.setItem('selectedProduct', JSON.stringify(selectedProduct));
+        localStorage.setItem('selectedProduct', JSON.stringify(product));
 
+        const barcodeCountInputName = `barcodeCount-${product._id}`;
+        const barcodeCount = document.querySelector(`input[name="${barcodeCountInputName}"]`).value;
+
+        const barcodeCountAsNumber = parseInt(barcodeCount, 10); // Use base 10
+        localStorage.setItem('barcodeCount', barcodeCountAsNumber);
+
+        window.open('/barcode');
     };
-   
+
 
 
     const handleEdit = (product) => {
@@ -106,7 +122,7 @@ const Products = () => {
             quantity: parseInt(editingProduct.quantity, 10), // Convert to integer
             price: parseFloat(editingProduct.price), // Convert to float
         };
-    
+
         try {
             const response = await fetch(`http://localhost:5000/updateProduct/${editingProduct._id}`, {
                 method: 'PATCH',
@@ -115,7 +131,7 @@ const Products = () => {
                 },
                 body: JSON.stringify(updatedFields), // Send only the fields to be updated
             });
-    
+
             if (response.ok) {
                 console.log('Product updated successfully');
                 alert('Product updated successfully');
@@ -128,7 +144,7 @@ const Products = () => {
             console.error('An error occurred while updating product:', error);
         }
     };
-    
+
 
     const handleDelete = async (product) => {
         try {
@@ -150,12 +166,12 @@ const Products = () => {
         }
     };
 
- 
+
 
     return (
         <div className='relative'>
             <h3 className="text-center text-3xl font-bold my-12">Products</h3>
-            
+
             {editModalVisible && (
                 <div className=" w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
                     <div className="card-body">
@@ -210,7 +226,7 @@ const Products = () => {
                         <div className="form-control mt-6">
                             <button onClick={handleUpdateProduct} className="">Update Product</button>
                             <button onClick={handleClose} className="">Close Modal</button>
-                           
+
                         </div>
                     </div>
                 </div>
