@@ -9,16 +9,21 @@
   border-radius: 0.25rem;
   padding: 0.1rem;
 }
-.form{
-    width: 400px;
-    margin: 0 auto;
-    border: 1px solid black;
-    padding: 10px;
-    border-radius: 10px;
+
+.form {
+  width: 400px;
+  margin: 0 auto;
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 @media print {
   .print-button {
     display: none;
   }
+}
+
+.out-of-stock {
+  background-color: red;
 }

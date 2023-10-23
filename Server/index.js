@@ -63,7 +63,7 @@ async function run() {
                 res.status(500).send({ success: false });
             }
         });
-        
+
 
 
         // get all products from database
@@ -80,6 +80,35 @@ async function run() {
                     res.send(result.deletedCount > 0)
                 })
         });
+        app.post('/generate-invoice', async (req, res) => {
+            try {
+                const { selectedProducts } = req.body;
+
+                // Loop through the selected products and update their quantities
+                for (const selectedProduct of selectedProducts) {
+                    const productId = new ObjectId(selectedProduct._id);
+                    const unitsToSubtract = selectedProduct.units;
+
+                    // Fetch the current product details from the database
+                    const currentProduct = await productCollection.findOne({ _id: productId });
+
+                    // Calculate the new quantity after subtracting units
+                    const newQuantity = currentProduct.quantity - unitsToSubtract;
+
+                    // Update the product's quantity in the database
+                    await productCollection.updateOne(
+                        { _id: productId },
+                        { $set: { quantity: newQuantity } }
+                    );
+                }
+
+                res.send({ success: true, message: 'Invoice generated successfully' });
+            } catch (error) {
+                console.error('Error generating invoice:', error);
+                res.status(500).send({ success: false, message: 'An error occurred while generating the invoice' });
+            }
+        });
+
 
         // updating a product
         app.patch('/updateProduct/:id', async (req, res) => {

@@ -1,11 +1,33 @@
 import { useEffect, useState } from 'react';
 import logo from '../assets/Robazz.png';
 import signature from '../assets/sig.jpeg';
-const InvoiceGenerator = ({ productData }) => {
+const InvoiceGenerator = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+  const [selectedCategory, setSelectedCategory] = useState('invoice'); // Default to 'invoice'
+  const [productData, setProductData] = useState([]);
+
+  // Function to fetch products from the database
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/products'); // Replace with your API endpoint
+      if (response.ok) {
+        const data = await response.json();
+        setProductData(data); // Assuming the response is an array of products
+      } else {
+        console.error('Failed to fetch products');
+      }
+    } catch (error) {
+      console.error('An error occurred while fetching products:', error);
+    }
+  };
+
+  // Fetch products when the component mounts
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const savedSelectedProducts = JSON.parse(localStorage.getItem('selectedProducts'));
@@ -22,6 +44,10 @@ const InvoiceGenerator = ({ productData }) => {
   };
 
   const selectProduct = (product) => {
+    if (selectedProducts.find((p) => p._id === product._id)) {
+      alert('Product already selected'); // Show an alert if the product is already selected
+      return;
+    }
     setSelectedProducts([...selectedProducts, product]);
     localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, product]));
   };
@@ -44,14 +70,41 @@ const InvoiceGenerator = ({ productData }) => {
 
   // Calculate the total price by summing up the total prices of selected products
   const totalInvoicePrice = selectedProducts.reduce((total, product) => total + (product.totalPrice || 0), 0);
+  const handlePrintInvoice = async () => {
+    const invoiceData = {
+      selectedProducts: selectedProducts.map((product) => ({
+        _id: product._id,
+        units: product.units,
+      })),
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/generate-invoice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(invoiceData),
+      });
+
+      if (response.ok) {
+        // Handle a successful response, e.g., show a success message or update your UI.
+      } else {
+        console.error('Failed to generate the invoice');
+      }
+    } catch (error) {
+      console.error('An error occurred while generating the invoice:', error);
+    }
+  };
+
 
   return (
-    <div className='w-[60%] border mx-auto py-4'>
+    <div className='w-[90%] border mx-auto py-4'>
       {/* <img className='w-[400px] h-[300px]' src={logo} alt="logo" /> */}
       <div className='relative'>
         <div className='bg-[#669999] p-5 ' ></div>
-        <p className='absolute top-0 right-40 bg-white py-1 px-4 text-2xl font-bold text-blue-900'>
-          INVOICE
+        <p id='category' className='absolute top-0 right-40 bg-white py-1 px-4 text-2xl font-bold text-blue-900 uppercase'>
+          {selectedCategory}
         </p>
       </div>
       <div>
@@ -141,13 +194,16 @@ const InvoiceGenerator = ({ productData }) => {
               </div>
               <div className="mb-4 flex items-center">
                 <label htmlFor="category" className="text-sm font-medium text-gray-700 w-1/3">Category:</label>
-                <input
-                  type="text"
+                <select
                   id="category"
                   name="category"
-                  placeholder="Enter category"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                   className="mt-1 px-1 border rounded-lg flex-1"
-                />
+                >
+                  <option value="invoice">Invoice</option>
+                  <option value="quotation">Quotation</option>
+                </select>
               </div>
             </div>
           </div>
@@ -199,6 +255,8 @@ const InvoiceGenerator = ({ productData }) => {
         <img className='w-24' src={signature} alt="signature" />
         <p className='relative left-2 border-t w-[100px]'>Signature</p>
       </div>
+      <button className='print-button' onClick={() => window.print()}>Print Quotation</button>
+      <button className='print-button' onClick={handlePrintInvoice}>Print Invoice</button>
     </div>
   );
 };

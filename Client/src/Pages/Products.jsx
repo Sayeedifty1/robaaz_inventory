@@ -54,6 +54,11 @@ const Products = () => {
             name: 'Quantity',
             selector: 'quantity',
             sortable: true,
+            cell: (row) => (
+                <div className={row.quantity === 0 ? 'out-of-stock p-2 rounded text-white' : ''}>
+                    {row.quantity === 0 ? 'Out of Stock' : row.quantity}
+                </div>
+            ),
         },
         {
             name: 'Price',
