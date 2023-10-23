@@ -8,6 +8,9 @@ const InvoiceGenerator = () => {
   const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
   const [selectedCategory, setSelectedCategory] = useState('invoice'); // Default to 'invoice'
   const [productData, setProductData] = useState([]);
+  const [discount, setDiscount] = useState(0);
+  const [discountType, setDiscountType] = useState('fixed');
+
 
   // Function to fetch products from the database
   const fetchProducts = async () => {
@@ -44,15 +47,25 @@ const InvoiceGenerator = () => {
   };
 
   const selectProduct = (product) => {
-    if (selectedProducts.find((p) => p._id === product._id)) {
+    if (product.quantity === 0) {
+      alert('This product is out of stock.');
+    } else if (selectedProducts.find((p) => p._id === product._id)) {
       alert('Product already selected'); // Show an alert if the product is already selected
-      return;
+    } else {
+      setSelectedProducts([...selectedProducts, product]);
+      localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, product]));
     }
-    setSelectedProducts([...selectedProducts, product]);
-    localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, product]));
   };
 
+
   const handleUnitsChange = (product, units) => {
+    // Ensure units are within the available quantity
+    if (units < 0) {
+      units = 0; // Avoid negative units
+    } else if (units > product.quantity) {
+      units = product.quantity; // Cap units at the available quantity
+    }
+
     const updatedProducts = selectedProducts.map((p) => {
       if (p._id === product._id) {
         return {
@@ -71,6 +84,7 @@ const InvoiceGenerator = () => {
   // Calculate the total price by summing up the total prices of selected products
   const totalInvoicePrice = selectedProducts.reduce((total, product) => total + (product.totalPrice || 0), 0);
   const handlePrintInvoice = async () => {
+    window.print();
     const invoiceData = {
       selectedProducts: selectedProducts.map((product) => ({
         _id: product._id,
@@ -96,6 +110,20 @@ const InvoiceGenerator = () => {
       console.error('An error occurred while generating the invoice:', error);
     }
   };
+
+  let calculatedDiscount = 0;
+
+  if (discountType === 'fixed') {
+    // If it's a fixed amount, parse the discount as a number
+    calculatedDiscount = parseFloat(discount);
+  } else if (discountType === 'percentage') {
+    // If it's a percentage, parse the discount as a percentage and calculate the discount
+    const percentageDiscount = parseFloat(discount);
+    calculatedDiscount = (percentageDiscount / 100) * totalInvoicePrice;
+  }
+
+  // Calculate the total price by subtracting the discount
+  const totalPrice = totalInvoicePrice - calculatedDiscount;
 
 
   return (
@@ -242,11 +270,29 @@ const InvoiceGenerator = () => {
           </tr>
           <tr className='border'>
             <td colSpan="3" className="border text-right pr-2">Discount:</td>
-            <td className="border">- dis</td>
+            <input
+              type="text"
+              id="discount"
+              name="discount"
+              placeholder="Enter discount"
+              className="mt-1 px-1 border w-20 text-right rounded-lg flex-1"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
+            />
+            <select
+              name="discountType"
+              id="discountType"
+              className="ml-2 mt-1 w-12 border rounded-lg px-1"
+              value={discountType}
+              onChange={(e) => setDiscountType(e.target.value)}
+            >
+              <option value="fixed">TK</option>
+              <option value="percentage">%</option>
+            </select>
           </tr>
           <tr className='border'>
             <td colSpan="3" className="border text-right pr-2">Total Price:</td>
-            <td className="border">total</td>
+            <td className="border">{totalPrice}</td>
           </tr>
         </tbody>
       </table>
