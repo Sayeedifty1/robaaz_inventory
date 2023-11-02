@@ -13,10 +13,11 @@ const Products = () => {
     });
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+
     // Function to fetch products from the database
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:5000/products'); // Replace with your API endpoint
+            const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data); // Assuming the response is an array of products
@@ -129,7 +130,7 @@ const Products = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:5000/updateProduct/${editingProduct._id}`, {
+            const response = await fetch(`http://localhost:3000/updateProduct/${editingProduct._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -153,7 +154,7 @@ const Products = () => {
 
     const handleDelete = async (product) => {
         try {
-            const response = await fetch(`http://localhost:5000/deleteProduct/${product._id}`, {
+            const response = await fetch(`http://localhost:3000/deleteProduct/${product._id}`, {
                 method: 'DELETE',
             });
 

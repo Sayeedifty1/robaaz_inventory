@@ -27,3 +27,23 @@
 .out-of-stock {
   background-color: red;
 }
+
+.active {
+  border-bottom: 6px solid rgb(237, 230, 38);
+  background-color: rgb(4, 37, 37);
+  padding: 3px;
+  color: antiquewhite;
+  border-radius: 8px;
+}
+
+/* Media query for print */
+@media print {
+  .bg-color {
+    -webkit-print-color-adjust: exact;
+    /* For Chrome and Safari */
+    color-adjust: exact;
+    /* For Firefox */
+    background-color: #669999;
+    /* Set the background color for printing */
+  }
+}

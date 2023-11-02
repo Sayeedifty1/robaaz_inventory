@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 
 const UploadProduct = () => {
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit, reset } = useForm()
     
     const onSubmit = async (data) => {
         try {
-          const response = await fetch('http://localhost:5000/addProduct', {
+          const response = await fetch('http://localhost:3000/addProduct', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -16,6 +16,8 @@ const UploadProduct = () => {
           if (response.ok) {
             // Data was successfully uploaded to the server
             console.log('Data successfully uploaded');
+            alert('Data successfully uploaded');
+            reset();
           } else {
             // Handle error cases
             console.error('Failed to upload data to the server');

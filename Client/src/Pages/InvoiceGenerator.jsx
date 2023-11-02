@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from '../assets/Robazz.png';
+import logo from '../../public/Artboard.png';
 import signature from '../assets/sig.jpeg';
 const InvoiceGenerator = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,7 +15,7 @@ const InvoiceGenerator = () => {
   // Function to fetch products from the database
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/products'); // Replace with your API endpoint
+      const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
       if (response.ok) {
         const data = await response.json();
         setProductData(data); // Assuming the response is an array of products
@@ -93,7 +93,7 @@ const InvoiceGenerator = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/generate-invoice', {
+      const response = await fetch('http://localhost:3000/generate-invoice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,9 +128,9 @@ const InvoiceGenerator = () => {
 
   return (
     <div className='w-[90%] border mx-auto py-4'>
-      {/* <img className='w-[400px] h-[300px]' src={logo} alt="logo" /> */}
+      <img className='w-full h-[150px]' src={logo} alt="logo" />
       <div className='relative'>
-        <div className='bg-[#669999] p-5 ' ></div>
+        <div className='bg-color bg-[#669999] p-5 ' ></div>
         <p id='category' className='absolute top-0 right-40 bg-white py-1 px-4 text-2xl font-bold text-blue-900 uppercase'>
           {selectedCategory}
         </p>
@@ -138,7 +138,7 @@ const InvoiceGenerator = () => {
       <div>
         <input
           type="search"
-          className="border  my-3"
+          className="border  my-3 print-button"
           placeholder="Search for a product"
           value={searchTerm}
           onChange={(e) => {
@@ -301,8 +301,11 @@ const InvoiceGenerator = () => {
         <img className='w-24' src={signature} alt="signature" />
         <p className='relative left-2 border-t w-[100px]'>Signature</p>
       </div>
-      <button className='print-button' onClick={() => window.print()}>Print Quotation</button>
-      <button className='print-button' onClick={handlePrintInvoice}>Print Invoice</button>
+      {selectedCategory === 'invoice' ? (
+        <button className='print-button btn btn-success' onClick={handlePrintInvoice}>Print Invoice</button>
+      ) : (
+        <button className='print-button btn btn-info mr-2' onClick={() => window.print()}>Print Quotation</button>
+      )}
     </div>
   );
 };
