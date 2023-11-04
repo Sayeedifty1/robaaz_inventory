@@ -11,6 +11,7 @@ const Products = () => {
         quantity: 0,
         price: 0,
     });
+    // eslint-disable-next-line no-unused-vars
     const [selectedProduct, setSelectedProduct] = useState(null);
 
 
@@ -38,7 +39,17 @@ const Products = () => {
     const columns = [
         {
             name: 'SL No.',
-            selector: 'serialNumber',
+            selector: (row, index) => index + 1,
+            sortable: true,
+        },
+        {
+            name: 'Category',
+            selector: 'category',
+            sortable: true,
+        },
+        {
+            name: 'Sub Category',
+            selector: 'subCategory',
             sortable: true,
         },
         {

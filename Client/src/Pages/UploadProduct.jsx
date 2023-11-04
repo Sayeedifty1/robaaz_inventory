@@ -32,6 +32,10 @@ const UploadProduct = () => {
         <div>
             <h3 className="text-center text-3xl font-bold my-12">Upload Products</h3>
             <form className="flex form flex-col gap-1 " onSubmit={handleSubmit(onSubmit)}>
+                <label htmlFor="">Category</label>
+                <input {...register("category", { required: true})} />
+                <label htmlFor="">Sub Category</label>
+                <input {...register("subCategory", { required: true})} />
                 <label htmlFor="">Product Name</label>
                 <input {...register("productName", { required: true})} />
                 <label htmlFor="">SKU</label>

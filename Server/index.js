@@ -42,13 +42,13 @@ async function run() {
         app.post('/addProduct', async (req, res) => {
             try {
                 // Fetch the last serial number from the database
-                const lastProduct = await productCollection.findOne({}, { sort: { serialNumber: -1 } });
-                let lastSerialNumber = lastProduct ? lastProduct.serialNumber : 0;
+                // const lastProduct = await productCollection.findOne({}, { sort: { serialNumber: -1 } });
+                // let lastSerialNumber = lastProduct ? lastProduct.serialNumber : 0;
 
                 const newProduct = req.body;
 
                 // Increase the serial number based on the last serial number
-                newProduct.serialNumber = lastSerialNumber + 1;
+                // newProduct.serialNumber = lastSerialNumber + 1;
 
                 // Insert the new product into the database
                 const result = await productCollection.insertOne(newProduct);
