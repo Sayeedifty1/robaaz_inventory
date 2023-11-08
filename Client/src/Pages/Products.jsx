@@ -13,6 +13,21 @@ const Products = () => {
     });
     // eslint-disable-next-line no-unused-vars
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
+    // Function to filter products based on the search query
+    useEffect(() => {
+        const filtered = products.filter((product) =>
+            product.productName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+    }, [products, searchQuery]);
+
+    // Function to handle the search input change
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+    };
 
 
     // Function to fetch products from the database
@@ -81,14 +96,14 @@ const Products = () => {
             name: 'Actions',
             cell: (row) => (
                 <div className='flex gap-4 text-center'>
-                    <button className='p-1 bg-blue-500 text-white rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
+                    <button className='p-1 bg-blue-500 text-white  rounded-lg' onClick={() => handleEdit(row)}>Edit</button>
                     <button className='p-1 bg-red-500 text-white rounded-lg' onClick={() => handleDelete(row)}>Delete</button>
 
                 </div>
             ),
         },
         {
-            name: 'Barcode Generate',
+            name: 'Barcode',
             cell: (row) => (
                 <div className='flex gap-2 text-center'>
                     <input type="number" className='w-10 border border-black p-1 rounded-md' name={`barcodeCount-${row._id}`} />
@@ -104,7 +119,6 @@ const Products = () => {
 
         const barcodeCountInputName = `barcodeCount-${product._id}`;
         const barcodeCount = document.querySelector(`input[name="${barcodeCountInputName}"]`).value;
-
         const barcodeCountAsNumber = parseInt(barcodeCount, 10); // Use base 10
         localStorage.setItem('barcodeCount', barcodeCountAsNumber);
 
@@ -186,9 +200,18 @@ const Products = () => {
 
 
     return (
-        <div className='relative'>
+        <div className='relative w-[90%] mx-auto'>
             <h3 className="text-center text-3xl font-bold my-12">Products</h3>
-
+            {/* Search input */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Search by Product Name"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className="border border-gray-300 rounded-md px-4 py-2"
+                />
+            </div>
             {editModalVisible && (
                 <div className=" w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
                     <div className="card-body">
@@ -251,13 +274,24 @@ const Products = () => {
 
             <DataTable
                 columns={columns}
-                data={products}
+                data={searchQuery ? filteredProducts : products}
                 pagination
+                customStyles={{
+                    head: {
+                        style: {
+                            fontSize: "1", // Adjust the font size here ("xl" size)
+                        },
+                    },
+                    rows: {
+                        style: {
+                            fontSize: "12px", // Adjust the font size for table rows if needed
+                        },
+                    },
+                }}
             />
-            {/* <InvoiceGenerator
-            productData={products}
-            /> */}
-        </div>
+
+
+        </div >
     );
 };
 

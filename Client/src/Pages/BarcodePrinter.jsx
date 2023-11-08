@@ -31,7 +31,7 @@ const BarcodePrinter = () => {
                     height={70}
                     format="CODE128"
                     ref={ref}
-                    value={product?.productName}
+                    value={product?.SKU}
                 />
 
             </div>
@@ -47,8 +47,8 @@ const BarcodePrinter = () => {
     };
 
     return (
-        <div className="barcode-print">
-            <div className="grid grid-cols-3">
+        <div className="barcode-print ml-10">
+            <div className="grid grid-cols-4">
                 {barcodeElements}
             </div>
             <button className="print-button" onClick={handlePrint}>Print</button>

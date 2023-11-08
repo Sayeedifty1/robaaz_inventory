@@ -1,7 +1,7 @@
 import {
-    createBrowserRouter,
-   
-  } from "react-router-dom";
+  createBrowserRouter,
+
+} from "react-router-dom";
 import Main from "../layout/Main";
 import BarcodePrinter from "../Pages/BarcodePrinter";
 import InvoiceGenerator from "../Pages/InvoiceGenerator";
@@ -11,27 +11,29 @@ import UploadProduct from "../Pages/UploadProduct";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Main/>,
+    element: <Main />,
     errorElement: <h1>404 Not Found</h1>,
     children: [
       {
         path: "/",
-        element: <Products/>,
+        element: <Products />,
       },
       {
         path: "/upload-product",
-        element: <UploadProduct/>,
+        element: <UploadProduct />,
       },
-      {
-        path: "/barcode",
-        element: <BarcodePrinter/>,
-      }
+
     ]
-  },  
+  },
   {
     path: "/invoice",
-    element: <InvoiceGenerator/>,
+    element: <InvoiceGenerator />,
+  },
+  {
+    path: "/barcode",
+    element: <BarcodePrinter />,
   }
+
   // {
   //     path: "/",
   //     element: <UploadProduct/>,
@@ -48,6 +50,6 @@ const router = createBrowserRouter([
   //     path: "barcode",
   //     element: <BarcodePrinter/>,
   //   }
-  ]);
+]);
 
-  export default router;
+export default router;

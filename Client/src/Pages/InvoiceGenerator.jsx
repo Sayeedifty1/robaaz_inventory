@@ -10,7 +10,27 @@ const InvoiceGenerator = () => {
   const [productData, setProductData] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState('fixed');
+  const [skuSearch, setSkuSearch] = useState(''); // New state for SKU search
 
+  // Function to search for a product by SKU and add it automatically as you type
+  useEffect(() => {
+    if (!skuSearch) {
+      return; // Do not perform the search if the SKU search is empty
+    }
+    const matchingProduct = productData.find((product) => product.SKU === skuSearch);
+    if (matchingProduct) {
+      if (matchingProduct.quantity === 0) {
+        alert('This product is out of stock.');
+      } else if (selectedProducts.find((p) => p._id === matchingProduct._id)) {
+        console.log("product added");
+      } else {
+        setSelectedProducts([...selectedProducts, matchingProduct]);
+        localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, matchingProduct]));
+      }
+    }
+
+    // Note: The SKU search input is not cleared here to allow continuous typing
+  }, [skuSearch, productData, selectedProducts]);
 
   // Function to fetch products from the database
   const fetchProducts = async () => {
@@ -56,6 +76,7 @@ const InvoiceGenerator = () => {
       localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, product]));
     }
   };
+
 
 
   const handleUnitsChange = (product, units) => {
@@ -136,16 +157,26 @@ const InvoiceGenerator = () => {
         </p>
       </div>
       <div>
-        <input
-          type="search"
-          className="border  my-3 print-button"
-          placeholder="Search for a product"
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            handleSearch();
-          }}
-        />
+        <div className='flex justify-between'>
+          <input
+            type="search"
+            className="border my-3 print-button"
+            placeholder="Search by SKU"
+            value={skuSearch}
+            onChange={(e) => setSkuSearch(e.target.value)}
+          />
+
+          <input
+            type="search"
+            className="border  my-3 print-button"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch();
+            }}
+          />
+        </div>
         <ul>
           {searchResults.map((product) => (
             <li key={product._id}>
