@@ -5,14 +5,41 @@ const InvoiceGenerator = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+  // const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
   const [selectedCategory, setSelectedCategory] = useState('invoice'); // Default to 'invoice'
   const [productData, setProductData] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState('fixed');
   const [skuSearch, setSkuSearch] = useState(''); // New state for SKU search
-  
 
+
+  // Place these lines at the beginning of your component
+  const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+  const [invoiceCount, setInvoiceCount] = useState(Number(localStorage.getItem(currentDate)) || 0);
+  const [invoiceNumber, setInvoiceNumber] = useState('');
+
+  useEffect(() => {
+    // This will run every time invoiceNumber changes
+  }, [invoiceNumber]);
+  
+  useEffect(() => {
+    const storedDate = localStorage.getItem('date');
+    if (storedDate !== currentDate) {
+      localStorage.setItem('date', currentDate);
+      setInvoiceCount(0);
+    }
+    if (selectedCategory === 'invoice') {
+      const newInvoiceNumber = `${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
+      setInvoiceNumber(newInvoiceNumber);
+    }
+  }, [currentDate, selectedCategory]);
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    if (e.target.value !== 'invoice') {
+      setInvoiceNumber('');
+    }
+  };
   // Function to search for a product by SKU and add it automatically as you type
   useEffect(() => {
     if (!skuSearch) {
@@ -115,13 +142,21 @@ const InvoiceGenerator = () => {
   const totalInvoicePrice = selectedProducts.reduce((total, product) => total + (product.totalPrice || 0), 0);
   const handlePrintInvoice = async () => {
     window.print();
-    const invoiceData = {
-      selectedProducts: selectedProducts.map((product) => ({
-        _id: product._id,
-        units: product.units,
-      })),
-    };
-
+  let newInvoiceNumber;
+  if (selectedCategory === 'invoice') {
+    newInvoiceNumber = `${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
+    setInvoiceNumber(newInvoiceNumber);
+    setInvoiceCount(prevCount => prevCount + 1);
+    localStorage.setItem(currentDate, invoiceCount + 1);
+  }
+  const invoiceData = {
+    invoiceNumber: newInvoiceNumber,
+    selectedProducts: selectedProducts.map((product) => ({
+      _id: product._id,
+      units: product.units,
+    })),
+  };
+  location.reload();
     try {
       const response = await fetch('https://robazz-inventory.vercel.app/generate-invoice', {
         method: 'POST',
@@ -269,8 +304,10 @@ const InvoiceGenerator = () => {
                   type="text"
                   id="invoice"
                   name="invoice"
+                  value={invoiceNumber}
                   placeholder="Enter invoice number"
-                  className="mt-1 px-1   border rounded-lg flex-1"
+                  onChange={(e) => setInvoiceNumber(e.target.value)}
+                  className="mt-1 px-1 border rounded-lg flex-1"
                 />
               </div>
               <div className="mb-4 flex items-center">
@@ -279,7 +316,7 @@ const InvoiceGenerator = () => {
                   id="category"
                   name="category"
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  onChange={(e) => handleCategoryChange(e)}
                   className="mt-1 px-1 border rounded-lg flex-1"
                 >
                   <option value="invoice">Invoice</option>
