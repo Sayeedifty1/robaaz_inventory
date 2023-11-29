@@ -11,6 +11,7 @@ const InvoiceGenerator = () => {
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState('fixed');
   const [skuSearch, setSkuSearch] = useState(''); // New state for SKU search
+  
 
   // Function to search for a product by SKU and add it automatically as you type
   useEffect(() => {
@@ -35,7 +36,7 @@ const InvoiceGenerator = () => {
   // Function to fetch products from the database
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
+      const response = await fetch('https://robazz-inventory.vercel.app/products'); // Replace with your API endpoint
       if (response.ok) {
         const data = await response.json();
         setProductData(data); // Assuming the response is an array of products
@@ -74,6 +75,8 @@ const InvoiceGenerator = () => {
     } else {
       setSelectedProducts([...selectedProducts, product]);
       localStorage.setItem('selectedProducts', JSON.stringify([...selectedProducts, product]));
+      setSearchResults([]); // Clear the search results
+      setSearchTerm(''); // Clear the search term
     }
   };
 
@@ -102,6 +105,12 @@ const InvoiceGenerator = () => {
     localStorage.setItem('selectedProducts', JSON.stringify(updatedProducts));
   };
 
+  // function to clear local storage
+  const clearLocalStorage = () => {
+    localStorage.clear();
+    setSelectedProducts([]);
+  };
+
   // Calculate the total price by summing up the total prices of selected products
   const totalInvoicePrice = selectedProducts.reduce((total, product) => total + (product.totalPrice || 0), 0);
   const handlePrintInvoice = async () => {
@@ -114,7 +123,7 @@ const InvoiceGenerator = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/generate-invoice', {
+      const response = await fetch('https://robazz-inventory.vercel.app/generate-invoice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,6 +155,19 @@ const InvoiceGenerator = () => {
   // Calculate the total price by subtracting the discount
   const totalPrice = totalInvoicePrice - calculatedDiscount;
 
+  // Function to update the price of a product
+  const handlePriceChange = (product, newPrice) => {
+    // Find the product in the selectedProducts array
+    const productIndex = selectedProducts.findIndex((p) => p._id === product._id);
+
+    // Create a new array with the updated product
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[productIndex] = { ...product, price: newPrice };
+
+    // Update the state and local storage
+    setSelectedProducts(newSelectedProducts);
+    localStorage.setItem('selectedProducts', JSON.stringify(newSelectedProducts));
+  };
 
   return (
     <div className='w-[90%] border mx-auto py-4'>
@@ -283,7 +305,14 @@ const InvoiceGenerator = () => {
           {selectedProducts.map((product) => (
             <tr className='border' key={product._id}>
               <td className='border w-[40%]'>{product.productName}</td>
-              <td className='border'>{product.price}</td>
+              <td className='border'>
+                <input
+                  className='text-center'
+                  type="number"
+                  defaultValue={product.price}
+                  onChange={(e) => handlePriceChange(product, parseFloat(e.target.value))}
+                />
+              </td>
               <td className='border w-[10%]'>
                 <input
                   className='text-center'
@@ -337,6 +366,7 @@ const InvoiceGenerator = () => {
       ) : (
         <button className='print-button btn btn-info mr-2' onClick={() => window.print()}>Print Quotation</button>
       )}
+      <button onClick={clearLocalStorage} className='print-button btn btn-warning ml-2'>Clear</button>
     </div>
   );
 };
