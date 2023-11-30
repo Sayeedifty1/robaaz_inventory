@@ -33,7 +33,7 @@ const Products = () => {
     // Function to fetch products from the database
     const fetchProducts = async () => {
         try {
-            const response = await fetch('https://robazz-inventory.vercel.app/products'); // Replace with your API endpoint
+            const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data); // Assuming the response is an array of products
@@ -53,22 +53,22 @@ const Products = () => {
 
     const columns = [
         {
-            name: 'SL No.',
+            name: <div className="word-wrap">SL No.</div>,
             selector: (row, index) => index + 1,
             sortable: true,
         },
         {
-            name: 'Category',
+            name: <div className="word-wrap">Category</div>,
             selector: 'category',
             sortable: true,
         },
         {
-            name: 'Sub Category',
+            name: <div className="word-wrap">Sub-Category</div>,
             selector: 'subCategory',
             sortable: true,
         },
         {
-            name: 'Product Name',
+            name: <div className="word-wrap">Product Name</div>,
             selector: 'productName',
             sortable: true,
         },
@@ -88,8 +88,13 @@ const Products = () => {
             ),
         },
         {
-            name: 'Price',
-            selector: 'price',
+            name: <div className="word-wrap">Buying Price</div>,
+            selector: 'buyingPrice',
+            sortable: true,
+        },
+        {
+            name: <div className="word-wrap">Selling Price</div>,
+            selector: 'sellingPrice',
             sortable: true,
         },
         {
@@ -155,7 +160,7 @@ const Products = () => {
         };
 
         try {
-            const response = await fetch(`https://robazz-inventory.vercel.app/updateProduct/${editingProduct._id}`, {
+            const response = await fetch(`http://localhost:3000/updateProduct/${editingProduct._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -179,7 +184,7 @@ const Products = () => {
 
     const handleDelete = async (product) => {
         try {
-            const response = await fetch(`https://robazz-inventory.vercel.app/deleteProduct/${product._id}`, {
+            const response = await fetch(`http://localhost:3000/deleteProduct/${product._id}`, {
                 method: 'DELETE',
             });
 

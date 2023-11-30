@@ -63,7 +63,7 @@ const InvoiceGenerator = () => {
   // Function to fetch products from the database
   const fetchProducts = async () => {
     try {
-      const response = await fetch('https://robazz-inventory.vercel.app/products'); // Replace with your API endpoint
+      const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
       if (response.ok) {
         const data = await response.json();
         setProductData(data); // Assuming the response is an array of products
@@ -158,7 +158,7 @@ const InvoiceGenerator = () => {
   };
   location.reload();
     try {
-      const response = await fetch('https://robazz-inventory.vercel.app/generate-invoice', {
+      const response = await fetch('http://localhost:3000/generate-invoice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
