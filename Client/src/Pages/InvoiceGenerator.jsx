@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import logo from '../../public/Artboard.png';
 import signature from '../assets/sig.jpeg';
+import logDetails from '../utilities/utilities';
+
 const InvoiceGenerator = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -156,7 +159,7 @@ const InvoiceGenerator = () => {
       units: product.units,
     })),
   };
-  location.reload();
+  // location.reload();
     try {
       const response = await fetch('http://localhost:3000/generate-invoice', {
         method: 'POST',
@@ -203,7 +206,7 @@ const InvoiceGenerator = () => {
     setSelectedProducts(newSelectedProducts);
     localStorage.setItem('selectedProducts', JSON.stringify(newSelectedProducts));
   };
-
+  console.log(selectedProducts)
   return (
     <div className='w-[90%] border mx-auto py-4'>
       <img className='w-full h-[150px]' src={logo} alt="logo" />
@@ -399,7 +402,7 @@ const InvoiceGenerator = () => {
         <p className='relative left-2 border-t w-[100px]'>Signature</p>
       </div>
       {selectedCategory === 'invoice' ? (
-        <button className='print-button btn btn-success' onClick={handlePrintInvoice}>Print Invoice</button>
+        <button className='print-button btn btn-success' onClick={() => { handlePrintInvoice(); logDetails(selectedProducts, totalInvoicePrice, totalPrice); }}>Print Invoice</button>
       ) : (
         <button className='print-button btn btn-info mr-2' onClick={() => window.print()}>Print Quotation</button>
       )}

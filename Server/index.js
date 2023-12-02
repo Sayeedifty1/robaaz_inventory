@@ -37,6 +37,7 @@ async function run() {
             }
         }));
         const productCollection = client.db("robazz").collection("inventory");
+        const invoiceCollection = client.db("robazz").collection("invoiceTrack");
 
 
         app.post('/addProduct', async (req, res) => {
@@ -136,7 +137,23 @@ async function run() {
             }
         });
 
+        // invoice track
+        app.post('/addInvoice', async (req, res) => {
+            try {
+                const newInvoice = req.body;
+                // console.log(newInvoice)
+                const result = await invoiceCollection.insertOne(newInvoice);
 
+                if (result.insertedCount > 0) {
+                    res.send({ success: true });
+                } else {
+                    res.send({ success: false });
+                }
+            } catch (error) {
+                console.error('Error inserting invoice:', error);
+                res.status(500).send({ success: false });
+            }
+        });
 
 
 
