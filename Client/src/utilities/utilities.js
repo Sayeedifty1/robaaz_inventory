@@ -26,7 +26,7 @@ const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice) => {
         totalPrice: totalPrice,
         profit: profit
     };
-
+// console.log(details)
     try {
         const response = await fetch('http://localhost:3000/addInvoice', {
             method: 'POST',
@@ -49,3 +49,18 @@ const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice) => {
 
 };
 export default logDetails;
+
+// Function to fetch products from the database
+export const fetchProducts = async (setProductData) => {
+  try {
+    const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
+    if (response.ok) {
+      const data = await response.json();
+      setProductData(data); // Assuming the response is an array of products
+    } else {
+      console.error('Failed to fetch products');
+    }
+  } catch (error) {
+    console.error('An error occurred while fetching products:', error);
+  }
+};

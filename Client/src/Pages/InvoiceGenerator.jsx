@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import logo from '../../public/Artboard.png';
 import signature from '../assets/sig.jpeg';
-import logDetails from '../utilities/utilities';
+import logDetails, { fetchProducts } from '../utilities/utilities';
 
 const InvoiceGenerator = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,7 +24,7 @@ const InvoiceGenerator = () => {
   useEffect(() => {
     // This will run every time invoiceNumber changes
   }, [invoiceNumber]);
-  
+
   useEffect(() => {
     const storedDate = localStorage.getItem('date');
     if (storedDate !== currentDate) {
@@ -63,24 +63,10 @@ const InvoiceGenerator = () => {
     // Note: The SKU search input is not cleared here to allow continuous typing
   }, [skuSearch, productData, selectedProducts]);
 
-  // Function to fetch products from the database
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
-      if (response.ok) {
-        const data = await response.json();
-        setProductData(data); // Assuming the response is an array of products
-      } else {
-        console.error('Failed to fetch products');
-      }
-    } catch (error) {
-      console.error('An error occurred while fetching products:', error);
-    }
-  };
-
+  
   // Fetch products when the component mounts
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(setProductData);
   }, []);
 
   useEffect(() => {
@@ -110,8 +96,6 @@ const InvoiceGenerator = () => {
     }
   };
 
-
-
   const handleUnitsChange = (product, units) => {
     // Ensure units are within the available quantity
     if (units < 0) {
@@ -125,7 +109,7 @@ const InvoiceGenerator = () => {
         return {
           ...p,
           units,
-          totalPrice: units * p.price,
+          totalPrice: units * p.sellingPrice,
         };
       }
       return p;
@@ -145,21 +129,22 @@ const InvoiceGenerator = () => {
   const totalInvoicePrice = selectedProducts.reduce((total, product) => total + (product.totalPrice || 0), 0);
   const handlePrintInvoice = async () => {
     window.print();
-  let newInvoiceNumber;
-  if (selectedCategory === 'invoice') {
-    newInvoiceNumber = `${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
-    setInvoiceNumber(newInvoiceNumber);
-    setInvoiceCount(prevCount => prevCount + 1);
-    localStorage.setItem(currentDate, invoiceCount + 1);
-  }
-  const invoiceData = {
-    invoiceNumber: newInvoiceNumber,
-    selectedProducts: selectedProducts.map((product) => ({
-      _id: product._id,
-      units: product.units,
-    })),
-  };
-  // location.reload();
+    let newInvoiceNumber;
+    if (selectedCategory === 'invoice') {
+      newInvoiceNumber = `${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
+      setInvoiceNumber(newInvoiceNumber);
+      setInvoiceCount(prevCount => prevCount + 1);
+      localStorage.setItem(currentDate, invoiceCount + 1);
+    }
+    const invoiceData = {
+      invoiceNumber: newInvoiceNumber,
+      selectedProducts: selectedProducts.map((product) => ({
+        _id: product._id,
+        units: product.units,
+      })),
+    };
+    location.reload();
+    clearLocalStorage();
     try {
       const response = await fetch('http://localhost:3000/generate-invoice', {
         method: 'POST',
@@ -200,7 +185,7 @@ const InvoiceGenerator = () => {
 
     // Create a new array with the updated product
     const newSelectedProducts = [...selectedProducts];
-    newSelectedProducts[productIndex] = { ...product, price: newPrice };
+    newSelectedProducts[productIndex] = { ...product, sellingPrice: newPrice };
 
     // Update the state and local storage
     setSelectedProducts(newSelectedProducts);
@@ -349,7 +334,7 @@ const InvoiceGenerator = () => {
                 <input
                   className='text-center'
                   type="number"
-                  defaultValue={product.price}
+                  defaultValue={product.sellingPrice}
                   onChange={(e) => handlePriceChange(product, parseFloat(e.target.value))}
                 />
               </td>
