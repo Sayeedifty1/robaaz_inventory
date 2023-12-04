@@ -1,13 +1,36 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from "../../public/logo.png"
 import Modal from './Modal'; // Import your Modal component
-import {FaRegBell} from "react-icons/fa"
+import { FaRegBell } from "react-icons/fa"
 
 const Navbar = () => {
     const location = useLocation();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [products, setProducts] = useState([]);
+    // Function to fetch products from the database
+    const fetchProducts = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
+            if (response.ok) {
+                const data = await response.json();
+                setProducts(data); // Assuming the response is an array of products
+            } else {
+                console.error('Failed to fetch products');
+            }
+        } catch (error) {
+            console.error('An error occurred while fetching products:', error);
+        }
+    };
 
+    // Fetch products when the component mounts
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+
+
+    const outOfStockProducts = products.filter(product => parseInt(product.quantity) <= parseInt(product.threshold));
     return (
         <div>
             <div className="navbar bg-base-100 w-[90%] mx-auto">
@@ -26,7 +49,10 @@ const Navbar = () => {
                         <NavLink to="/invoice" className={`${location.pathname === "/invoice" ? "active" : "not-active"}`}>
                             Invoice
                         </NavLink>
-                        <FaRegBell className="h-6 w-6 cursor-pointer" onClick={() => setIsModalOpen(true)} />
+                        <div className="relative">
+                            <FaRegBell className="h-6 w-6 cursor-pointer " onClick={() => setIsModalOpen(true)}></FaRegBell>
+                            <p className="absolute h-4 w-4 rounded-full bg-red-600 bottom-7 left-3 text-xs text-white text-center">{outOfStockProducts?.length}</p>
+                        </div>
                     </div>
                     <div className="ml-6 dropdown dropdown-end">
                         <button tabIndex={0} className="btn btn-ghost btn-circle avatar">
@@ -40,7 +66,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
-            {isModalOpen && <Modal onClose={() => setIsModalOpen(false)} />}
+            {isModalOpen && <Modal onClose={() => setIsModalOpen(false)} products={outOfStockProducts} />}
         </div>
     );
 };
