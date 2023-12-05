@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-
+import { useProducts, useProductModal } from '../utilities/utilities';
 const Products = () => {
-    const [products, setProducts] = useState([]);
-    const [editModalVisible, setEditModalVisible] = useState(false);
-    const [editingProduct, setEditingProduct] = useState({
+    // const [products, setProducts] = useState([]);
+    const {
+        editModalVisible,
+        editingProduct,
+        handleEdit,
+        setEditingProduct,
+        handleClose,
+        handleUpdateProduct,
+    } = useProductModal();
 
-        productName: '',
-        SKU: '',
-        quantity: 0,
-        price: 0,
-    });
+    const {products,getProducts } = useProducts();
+
     // eslint-disable-next-line no-unused-vars
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -28,27 +31,13 @@ const Products = () => {
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
+   
 
-
-    // Function to fetch products from the database
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
-            if (response.ok) {
-                const data = await response.json();
-                setProducts(data); // Assuming the response is an array of products
-            } else {
-                console.error('Failed to fetch products');
-            }
-        } catch (error) {
-            console.error('An error occurred while fetching products:', error);
-        }
-    };
 
     // Fetch products when the component mounts
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        getProducts();
+    }, [handleUpdateProduct]);
 
 
     const columns = [
@@ -132,55 +121,6 @@ const Products = () => {
 
 
 
-    const handleEdit = (product) => {
-        // Set the editing product when the "Edit" button is clicked
-        setEditingProduct(product);
-        setEditModalVisible(true);
-    };
-
-    const handleClose = () => {
-        // Clear the editing product and close the modal
-        setEditingProduct({
-            _id: '',
-            productName: '',
-            SKU: '',
-            quantity: 0,
-            price: 0,
-        });
-        setEditModalVisible(false);
-    };
-
-    const handleUpdateProduct = async () => {
-        // Create an object containing only the fields to be updated
-        const updatedFields = {
-            productName: editingProduct.productName,
-            SKU: editingProduct.SKU,
-            quantity: parseInt(editingProduct.quantity, 10), // Convert to integer
-            price: parseFloat(editingProduct.price), // Convert to float
-        };
-
-        try {
-            const response = await fetch(`http://localhost:3000/updateProduct/${editingProduct._id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedFields), // Send only the fields to be updated
-            });
-
-            if (response.ok) {
-                console.log('Product updated successfully');
-                alert('Product updated successfully');
-                fetchProducts(); // Refresh the product list after the update
-                setEditModalVisible(false); // Close the modal
-            } else {
-                console.error('Failed to update product');
-            }
-        } catch (error) {
-            console.error('An error occurred while updating product:', error);
-        }
-    };
-
 
     const handleDelete = async (product) => {
         try {
@@ -192,7 +132,7 @@ const Products = () => {
                 // Product deleted successfully
                 console.log('Product deleted successfully');
                 alert('Product deleted successfully');
-                fetchProducts();
+                getProducts();
                 // You may also want to update your local state or refetch the products from the server
             } else {
                 console.error('Failed to delete product');
@@ -218,7 +158,7 @@ const Products = () => {
                 />
             </div>
             {editModalVisible && (
-                <div className=" w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
+                <div className="w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
                     <div className="card-body">
                         <div className="form-control">
                             <label className="label">
@@ -226,10 +166,11 @@ const Products = () => {
                             </label>
                             <input
                                 type="text"
-                                placeholder="product Name"
+                                placeholder="Product Name"
                                 className="input input-bordered"
                                 value={editingProduct.productName}
                                 onChange={(e) => setEditingProduct({ ...editingProduct, productName: e.target.value })}
+
                             />
                         </div>
                         <div className="form-control">
@@ -241,7 +182,8 @@ const Products = () => {
                                 placeholder="SKU"
                                 className="input input-bordered"
                                 value={editingProduct.SKU}
-                                onChange={(e) => setEditingProduct({ ...editingProduct, SKU: e.target.value })}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, quantity: parseInt(e.target.value, 10) })}
+
                             />
                         </div>
                         <div className="form-control">
@@ -268,14 +210,14 @@ const Products = () => {
                                 onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
                             />
                         </div>
-                        <div className="form-control mt-6">
-                            <button onClick={handleUpdateProduct} className="">Update Product</button>
-                            <button onClick={handleClose} className="">Close Modal</button>
-
+                        <div className="form-control mt-6 gap-4">
+                            <button onClick={handleUpdateProduct} className="btn-primary rounded-lg">Update Product</button>
+                            <button onClick={handleClose} className="btn-error rounded-lg text-white">Close Modal</button>
                         </div>
                     </div>
                 </div>
             )}
+
 
             <DataTable
                 columns={columns}

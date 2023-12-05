@@ -25,8 +25,13 @@ const Navbar = () => {
 
     // Fetch products when the component mounts
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        const interval = setInterval(() => {
+            fetchProducts();
+        }, 2000); // Fetch every 2 seconds
+
+        // Clear interval on component unmount
+        return () => clearInterval(interval);
+    }, []); // Empty dependency array means this effect runs once on mount and clean up on unmount
 
 
 
