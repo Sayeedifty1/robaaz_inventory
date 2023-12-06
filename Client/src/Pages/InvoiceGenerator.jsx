@@ -19,11 +19,11 @@ const InvoiceGenerator = () => {
   // Place these lines at the beginning of your component
   const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
   const [invoiceCount, setInvoiceCount] = useState(Number(localStorage.getItem(currentDate)) || 0);
-  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [serialNumber, setSerialNumber] = useState('');
 
   useEffect(() => {
     // This will run every time invoiceNumber changes
-  }, [invoiceNumber]);
+  }, [serialNumber]);
 
   useEffect(() => {
     const storedDate = localStorage.getItem('date');
@@ -33,14 +33,16 @@ const InvoiceGenerator = () => {
     }
     if (selectedCategory === 'invoice') {
       const newInvoiceNumber = `${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
-      setInvoiceNumber(newInvoiceNumber);
+      setSerialNumber(newInvoiceNumber);
     }
   }, [currentDate, selectedCategory]);
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
     if (e.target.value !== 'invoice') {
-      setInvoiceNumber('');
+
+      const newQuotationNumber = `Q-${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
+      setSerialNumber(newQuotationNumber);
     }
   };
   // Function to search for a product by SKU and add it automatically as you type
@@ -132,7 +134,7 @@ const InvoiceGenerator = () => {
     let newInvoiceNumber;
     if (selectedCategory === 'invoice') {
       newInvoiceNumber = `${currentDate.slice(2).replace(/-/g, '')}${invoiceCount + 1}`;
-      setInvoiceNumber(newInvoiceNumber);
+      setSerialNumber(newInvoiceNumber);
       setInvoiceCount(prevCount => prevCount + 1);
       localStorage.setItem(currentDate, invoiceCount + 1);
     }
@@ -287,14 +289,16 @@ const InvoiceGenerator = () => {
                 />
               </div>
               <div className="mb-4 flex items-center">
-                <label htmlFor="invoice" className="text-sm font-medium text-gray-700 w-1/3">Invoice:</label>
+                <label htmlFor="invoice" className="text-sm font-medium text-gray-700 w-1/3">
+                  {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).toLowerCase()}:
+                </label>
                 <input
                   type="text"
                   id="invoice"
-                  name="invoice"
-                  value={invoiceNumber}
+                  name={selectedCategory === 'invoice' ? 'invoice' : 'quotation'}
+                  value={serialNumber}
                   placeholder="Enter invoice number"
-                  onChange={(e) => setInvoiceNumber(e.target.value)}
+                  onChange={(e) => setSerialNumber(e.target.value)}
                   className="mt-1 px-1 border rounded-lg flex-1"
                 />
               </div>
