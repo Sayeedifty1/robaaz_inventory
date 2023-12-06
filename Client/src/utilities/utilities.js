@@ -1,4 +1,4 @@
-const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice) => {
+const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice,selectedCategory) => {
     let totalBuyingPrice = 0;
     selectedProducts.forEach(product => {
         totalBuyingPrice += product.buyingPrice * product.units;
@@ -12,13 +12,13 @@ const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice) => {
         address: document.getElementById('address').value,
         number: document.getElementById('number').value,
         date: document.getElementById('date').value,
-        invoice: document.getElementById('invoice').value,
-        category: document.getElementById('category').value,
+        serial: document.getElementById('invoice').value, // Assuming 'invoice' is the correct ID
+        category: selectedCategory,
         discount: document.getElementById('discount').value,
         discountType: document.getElementById('discountType').value,
         products: selectedProducts.map(product => ({
             productName: product.productName,
-            price: product.price,
+            price: product.sellingPrice,
             units: product.units,
             totalPrice: product.totalPrice
         })),

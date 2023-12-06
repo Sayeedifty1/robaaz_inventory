@@ -391,9 +391,9 @@ const InvoiceGenerator = () => {
         <p className='relative left-2 border-t w-[100px]'>Signature</p>
       </div>
       {selectedCategory === 'invoice' ? (
-        <button className='print-button btn btn-success' onClick={() => { handlePrintInvoice(); logDetails(selectedProducts, totalInvoicePrice, totalPrice); }}>Print Invoice</button>
+        <button className='print-button btn btn-success' onClick={() => { handlePrintInvoice(); logDetails(selectedProducts, totalInvoicePrice, totalPrice, selectedCategory); }}>Print Invoice</button>
       ) : (
-        <button className='print-button btn btn-info mr-2' onClick={() => window.print()}>Print Quotation</button>
+        <button className='print-button btn btn-info mr-2' onClick={() => { logDetails(selectedProducts, totalInvoicePrice, totalPrice, selectedCategory); window.print(); }}>Print Quotation</button>
       )}
       <button onClick={clearLocalStorage} className='print-button btn btn-warning ml-2'>Clear</button>
     </div>

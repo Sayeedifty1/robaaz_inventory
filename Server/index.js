@@ -37,7 +37,7 @@ async function run() {
             }
         }));
         const productCollection = client.db("robazz").collection("inventory");
-        const invoiceCollection = client.db("robazz").collection("invoiceTrack");
+        const salesCollection = client.db("robazz").collection("salesTrack");
 
 
         app.post('/addProduct', async (req, res) => {
@@ -142,7 +142,7 @@ async function run() {
             try {
                 const newInvoice = req.body;
                 // console.log(newInvoice)
-                const result = await invoiceCollection.insertOne(newInvoice);
+                const result = await salesCollection.insertOne(newInvoice);
 
                 if (result.insertedCount > 0) {
                     res.send({ success: true });
