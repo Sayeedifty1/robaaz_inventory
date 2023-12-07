@@ -54,10 +54,14 @@ const Navbar = () => {
                         <NavLink to="/invoice" className={`${location.pathname === "/invoice" ? "active" : "not-active"}`}>
                             Invoice
                         </NavLink>
+                        <NavLink to="/record" className={`${location.pathname === "/settings" ? "active" : "not-active"}`}>
+                            Sales Record
+                        </NavLink>
                         <div className="relative">
                             <FaRegBell className="h-6 w-6 cursor-pointer " onClick={() => setIsModalOpen(true)}></FaRegBell>
                             <p className="absolute h-4 w-4 rounded-full bg-red-600 bottom-7 left-3 text-xs text-white text-center">{outOfStockProducts?.length}</p>
                         </div>
+
                     </div>
                     <div className="ml-6 dropdown dropdown-end">
                         <button tabIndex={0} className="btn btn-ghost btn-circle avatar">

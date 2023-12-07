@@ -7,6 +7,7 @@ import BarcodePrinter from "../Pages/BarcodePrinter";
 import InvoiceGenerator from "../Pages/InvoiceGenerator";
 import Products from "../Pages/Products";
 import UploadProduct from "../Pages/UploadProduct";
+import SalesRecord from "../Pages/SalesRecord";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         path: "/upload-product",
         element: <UploadProduct />,
       },
+      {
+        path: "/record",
+        element: <SalesRecord />,
+      }
 
     ]
   },
@@ -32,7 +37,8 @@ const router = createBrowserRouter([
   {
     path: "/barcode",
     element: <BarcodePrinter />,
-  }
+  },
+  
 
   // {
   //     path: "/",
