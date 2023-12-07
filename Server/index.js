@@ -163,6 +163,12 @@ async function run() {
         });
 
 
+        // get quotation from db by category
+        app.get('/invoiceCategory/:category', async (req, res) => {
+            const category = req.params.category;
+            const result = await salesCollection.find({ category: category }).toArray();
+            res.send(result);
+        });
 
 
 

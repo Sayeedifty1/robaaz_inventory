@@ -1,6 +1,23 @@
-import Container from "../shared/Container";
+import { useEffect, useState } from "react";
 
 const SalesRecord = () => {
+  const [activeTab, setActiveTab] = useState('invoice');
+const [data, setData] = useState([]);
+  // fetch data from database according to the category
+const fetchCategoryData = async (category) => {
+  const response = await fetch(`http://localhost:3000/invoiceCategory/${category}`);
+  const data = await response.json();
+
+  // Use the data
+  console.log(data);
+  setData(data);
+};
+
+// Call fetchCategoryData with the category you want
+useEffect(() => {
+  fetchCategoryData(activeTab);
+}, [activeTab]);
+
   return (
     <div
       style={{
@@ -18,32 +35,41 @@ const SalesRecord = () => {
           role="tab"
           className="tab"
           aria-label="Invoice"
-          checked
+          checked={activeTab === 'invoice'}
+          onChange={() => setActiveTab('invoice')}
         />
         <div role="tabpanel" className="tab-content p-10">
           <div className="overflow-x-auto">
             <table className="table table-xs">
               <thead>
                 <tr>
-                  <th></th>
+                  <th>SL. NO</th>
                   <th>Invoice</th>
                   <th>Name</th>
                   <th>Mobile</th>
                   <th>Number of product</th>
                   <th>Product Name</th>
                   <th>Total Price</th>
+                  <th>Profit</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Littel, Schaden and Vandervort</td>
-                  <td>Canada</td>
-                  <td>12/16/2020</td>
-                  <td>Blue</td>
-                </tr>
+                {data?.map((item) => (
+                  <tr key={item._id}>
+                    <th>1</th>
+                    <td>{item.serial}</td>
+                    <td>{item.name}</td>
+                    <td>{item.number}</td>
+                    <td>{item?.products?.length}</td>
+                    <td>
+                      {item?.products?.map((product, index) => (
+                        <p key={index}>{product.productName}</p>
+                      ))}
+                    </td>
+                    <td>{item.totalPrice}</td>
+                    <td>{item.profit}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -55,13 +81,15 @@ const SalesRecord = () => {
           role="tab"
           className="tab"
           aria-label="Quotation"
+          checked={activeTab === 'quotation'}
+          onChange={() => setActiveTab('quotation')}
         />
         <div role="tabpanel" className="tab-content p-10">
           <div className="overflow-x-auto">
             <table className="table table-xs">
               <thead>
                 <tr>
-                  <th></th>
+                  <th>SL.NO</th>
                   <th>Quotation</th>
                   <th>Name</th>
                   <th>Mobile</th>
@@ -71,15 +99,21 @@ const SalesRecord = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Littel, Schaden and Vandervort</td>
-                  <td>Canada</td>
-                  <td>12/16/2020</td>
-                  <td>Blue</td>
-                </tr>
+                {data?.map((item) => (
+                  <tr key={item._id}>
+                    <th>1</th>
+                    <td>{item.serial}</td>
+                    <td>{item.name}</td>
+                    <td>{item.number}</td>
+                    <td>{item?.products?.length}</td>
+                    <td>
+                      {item?.products?.map((product, index) => (
+                        <p key={index}>{product.productName}</p>
+                      ))}
+                    </td>
+                    <td>{item.totalPrice}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
