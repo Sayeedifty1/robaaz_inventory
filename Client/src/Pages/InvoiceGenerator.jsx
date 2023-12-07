@@ -14,12 +14,39 @@ const InvoiceGenerator = () => {
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState('fixed');
   const [skuSearch, setSkuSearch] = useState(''); // New state for SKU search
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [number, setNumber] = useState('');
+  const [searchQuotation, setSearchQuotation] = useState('');
 
 
   // Place these lines at the beginning of your component
   const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
   const [invoiceCount, setInvoiceCount] = useState(Number(localStorage.getItem(currentDate)) || 0);
   const [serialNumber, setSerialNumber] = useState('');
+
+  const fetchQuotation = async () => {
+    const response = await fetch(`http://localhost:3000/invoice/${searchQuotation}`);
+    const dataArray = await response.json();
+
+    // Check if dataArray is defined before setting the state
+    if (dataArray && dataArray.length > 0) {
+      const data = dataArray[0]; // Assuming you want to use the first item in the array
+      setName(data.name || '');
+      setEmail(data.email || '');
+      setAddress(data.address || '');
+      setNumber(data.number || '');
+      setSerialNumber(data.serial || '');
+      setSelectedCategory(data.category || '');
+      setDiscount(data.discount || 0);
+      setDiscountType(data.discountType || 'fixed');
+      setSelectedProducts(data.products)
+    } else {
+      console.error('Data is undefined or empty');
+    }
+  };
+ 
 
   useEffect(() => {
     // This will run every time invoiceNumber changes
@@ -65,7 +92,7 @@ const InvoiceGenerator = () => {
     // Note: The SKU search input is not cleared here to allow continuous typing
   }, [skuSearch, productData, selectedProducts]);
 
-  
+
   // Fetch products when the component mounts
   useEffect(() => {
     fetchProducts(setProductData);
@@ -193,7 +220,10 @@ const InvoiceGenerator = () => {
     setSelectedProducts(newSelectedProducts);
     localStorage.setItem('selectedProducts', JSON.stringify(newSelectedProducts));
   };
-  console.log(selectedProducts)
+
+
+
+
   return (
     <div className='w-[90%] border mx-auto py-4'>
       <img className='w-full h-[150px]' src={logo} alt="logo" />
@@ -212,6 +242,16 @@ const InvoiceGenerator = () => {
             value={skuSearch}
             onChange={(e) => setSkuSearch(e.target.value)}
           />
+          <div className='print-button'>
+            <input
+              type="search"
+              className="border my-3 mr-2"
+              placeholder="Search by Quotation Number"
+              value={searchQuotation}
+              onChange={e => setSearchQuotation(e.target.value)}
+            />
+            <button onClick={fetchQuotation()} className='bg-blue-300 p-1  rounded-lg hidden text-white'>Search</button>
+          </div>
 
           <input
             type="search"
@@ -237,43 +277,19 @@ const InvoiceGenerator = () => {
               <h2 className="text-2xl font-bold mb-4">Personal Information</h2>
               <div className="mb-4 flex items-center">
                 <label htmlFor="name" className="text-sm font-medium text-gray-700 w-1/3">Name:</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Enter your name"
-                  className="mt-1 px-1  border rounded-lg flex-1"
-                />
+                <input type="text" id="name" name="name" placeholder='Enter Your Name' value={name} className="mt-1 px-1  border rounded-lg flex-1" />
               </div>
               <div className="mb-4 flex items-center">
                 <label htmlFor="email" className="text-sm font-medium text-gray-700 w-1/3">Email:</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  className="mt-1 px-1  border rounded-lg flex-1"
-                />
+                <input type="email" id="email" name="email" value={email} className="mt-1 px-1  border rounded-lg flex-1" />
               </div>
               <div className="mb-4 flex items-center">
                 <label htmlFor="address" className="text-sm font-medium text-gray-700 w-1/3">Address:</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  placeholder="Enter your address"
-                  className="mt-1 px-1  border rounded-lg flex-1"
-                />
+                <input type="text" id="address" name="address" value={address} className="mt-1 px-1  border rounded-lg flex-1" />
               </div>
               <div className="mb-4 flex items-center">
                 <label htmlFor="number" className="text-sm font-medium text-gray-700 w-1/3">Number:</label>
-                <input
-                  type="text"
-                  id="number"
-                  name="number"
-                  placeholder="Enter your number"
-                  className="mt-1 px-1  border rounded-lg flex-1"
-                />
+                <input type="text" id="number" name="number" value={number} className="mt-1 px-1  border rounded-lg flex-1" />
               </div>
             </div>
             <div className="w-1/2 p-6">

@@ -155,6 +155,12 @@ async function run() {
             }
         });
 
+        // get quotation from db by serial number
+        app.get('/invoice/:serialNumber', async (req, res) => {
+            const serial = req.params.serialNumber;
+            const result = await salesCollection.find({ serial: serial }).toArray();
+            res.send(result);
+        });
 
 
 
