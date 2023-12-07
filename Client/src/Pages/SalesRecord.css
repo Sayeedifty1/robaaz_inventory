@@ -1,0 +1,7 @@
+.tab-content {
+  display: none;
+}
+
+.tab:checked ~ .tab-content {
+  display: block;
+}
