@@ -11,7 +11,7 @@ const Navbar = () => {
     // Function to fetch products from the database
     const fetchProducts = async () => {
         try {
-            const response = await fetch('robazz-inventory-c3eda9f5a18d.herokuapp.com/products'); // Replace with your API endpoint
+            const response = await fetch('https://robazz-inventory-c3eda9f5a18d.herokuapp.com/products'); // Replace with your API endpoint
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data); // Assuming the response is an array of products
