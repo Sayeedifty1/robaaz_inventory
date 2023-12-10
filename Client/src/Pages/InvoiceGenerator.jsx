@@ -27,7 +27,7 @@ const InvoiceGenerator = () => {
   const [serialNumber, setSerialNumber] = useState('');
 
   const fetchQuotation = async () => {
-    const response = await fetch(`http://localhost:3000/invoice/${searchQuotation}`);
+    const response = await fetch(`robazz-inventory-c3eda9f5a18d.herokuapp.com/invoice/${searchQuotation}`);
     const dataArray = await response.json();
 
     // Check if dataArray is defined before setting the state
@@ -175,7 +175,7 @@ const InvoiceGenerator = () => {
     location.reload();
     clearLocalStorage();
     try {
-      const response = await fetch('http://localhost:3000/generate-invoice', {
+      const response = await fetch('robazz-inventory-c3eda9f5a18d.herokuapp.com/generate-invoice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

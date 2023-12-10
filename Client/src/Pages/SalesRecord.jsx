@@ -5,7 +5,7 @@ const SalesRecord = () => {
 const [data, setData] = useState([]);
   // fetch data from database according to the category
 const fetchCategoryData = async (category) => {
-  const response = await fetch(`http://localhost:3000/invoiceCategory/${category}`);
+  const response = await fetch(`robazz-inventory-c3eda9f5a18d.herokuapp.com/invoiceCategory/${category}`);
   const data = await response.json();
 
   // Use the data

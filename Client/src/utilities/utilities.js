@@ -28,7 +28,7 @@ const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice,select
     };
     // console.log(details)
     try {
-        const response = await fetch('http://localhost:3000/addInvoice', {
+        const response = await fetch('robazz-inventory-c3eda9f5a18d.herokuapp.com/addInvoice', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ export default logDetails;
 // Function to fetch products from the database
 export const fetchProducts = async (setProductData) => {
     try {
-        const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
+        const response = await fetch('robazz-inventory-c3eda9f5a18d.herokuapp.com/products'); // Replace with your API endpoint
         if (response.ok) {
             const data = await response.json();
             setProductData(data); // Assuming the response is an array of products
@@ -73,7 +73,7 @@ export const useProducts = () => {
 
     const getProducts = async () => {
         try {
-            const response = await fetch('http://localhost:3000/products'); // Replace with your API endpoint
+            const response = await fetch('robazz-inventory-c3eda9f5a18d.herokuapp.com/products'); // Replace with your API endpoint
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data); // Assuming the response is an array of products
@@ -127,7 +127,7 @@ export const useProductModal = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:3000/updateProduct/${editingProduct._id}`, {
+            const response = await fetch(`robazz-inventory-c3eda9f5a18d.herokuapp.com/updateProduct/${editingProduct._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

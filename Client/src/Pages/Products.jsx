@@ -124,7 +124,7 @@ const Products = () => {
 
     const handleDelete = async (product) => {
         try {
-            const response = await fetch(`http://localhost:3000/deleteProduct/${product._id}`, {
+            const response = await fetch(`robazz-inventory-c3eda9f5a18d.herokuapp.com/deleteProduct/${product._id}`, {
                 method: 'DELETE',
             });
 

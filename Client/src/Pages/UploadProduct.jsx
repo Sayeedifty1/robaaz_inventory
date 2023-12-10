@@ -5,7 +5,7 @@ const UploadProduct = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/addProduct', {
+      const response = await fetch('robazz-inventory-c3eda9f5a18d.herokuapp.com/addProduct', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
