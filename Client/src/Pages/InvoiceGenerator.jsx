@@ -37,8 +37,8 @@ const InvoiceGenerator = () => {
       setEmail(data.email || '');
       setAddress(data.address || '');
       setNumber(data.number || '');
-      setSerialNumber(data.serial || '');
-      setSelectedCategory(data.category || '');
+      // setSerialNumber(data.serial || '');
+      // setSelectedCategory(data.category || '');
       setDiscount(data.discount || 0);
       setDiscountType(data.discountType || 'fixed');
       setSelectedProducts(data.products)

@@ -18,7 +18,7 @@ const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice,select
         discountType: document.getElementById('discountType').value,
         products: selectedProducts.map(product => ({
             productName: product.productName,
-            price: product.sellingPrice,
+            sellingPrice: product.sellingPrice,
             units: product.units,
             totalPrice: product.totalPrice
         })),
