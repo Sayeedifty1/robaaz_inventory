@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useProducts, useProductModal } from "../utilities/utilities";
+import Loader from "../shared/Loader";
+import { SlMagnifier } from "react-icons/sl";
+
 const Products = () => {
   // const [products, setProducts] = useState([]);
   const {
@@ -12,7 +15,7 @@ const Products = () => {
     handleUpdateProduct,
   } = useProductModal();
 
-  const { products, getProducts } = useProducts();
+  const { products, getProducts, loading } = useProducts();
 
   // eslint-disable-next-line no-unused-vars
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -35,7 +38,7 @@ const Products = () => {
   // Fetch products when the component mounts
   useEffect(() => {
     getProducts();
-  }, [handleUpdateProduct]);
+  }, []);
 
   const columns = [
     {
@@ -167,18 +170,21 @@ const Products = () => {
     <div className="relative w-[90%] mx-auto">
       <h3 className="text-center text-3xl font-bold my-12">Products</h3>
       {/* Search input */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by Product Name"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="border border-gray-300 rounded-md px-4 py-2"
-        />
+      <div className="mb-2 flex justify-end">
+        <div className="relative">
+          <SlMagnifier className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by Product Name"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="border border-gray-300 bg-slate-200 rounded-md w-56 text-center py-2 pl-8" // added padding-left
+          />
+        </div>
       </div>
       {editModalVisible && (
-        <div className="w-[300px] flex-shrink-0 justify-center shadow-2xl bg-base-100 absolute z-20 left-80">
-          <div className="card-body">
+        <div className="w-[650px]  shadow-slate-600 shadow-xl rounded-2xl absolute z-20 top-10 left-80 bg-slate-300">
+          <div className="card-body grid grid-cols-2">
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Product Name</span>
@@ -281,21 +287,28 @@ const Products = () => {
                 }
               />
             </div>
-            <div className="form-control mt-6 gap-4">
+            <div className="form-control  gap-4 flex justify-end">
               <button
                 onClick={handleUpdateProduct}
-                className="btn btn-primary rounded-lg"
+                className="btn btn-primary  rounded-lg"
               >
                 Update
               </button>
+            </div>
+            <div className="form-control  flex justify-end gap-4 ">
               <button
                 onClick={handleClose}
-                className="btn btn-error rounded-lg text-white"
+                className="btn btn-error rounded-lg"
               >
                 Close
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {loading && (
+        <div className="text-center">
+          <Loader />
         </div>
       )}
 

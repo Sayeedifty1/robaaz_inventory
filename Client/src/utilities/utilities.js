@@ -70,8 +70,10 @@ export const fetchProducts = async (setProductData) => {
 export const useProducts = () => {
 
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const getProducts = async () => {
+        setLoading(true);
         try {
             const response = await fetch('https://robazz-inventory-c3eda9f5a18d.herokuapp.com/products'); // Replace with your API endpoint
             if (response.ok) {
@@ -82,11 +84,14 @@ export const useProducts = () => {
             }
         } catch (error) {
             console.error('An error occurred while fetching products:', error);
+        } finally {
+            setLoading(false);
         }
     };
     return {
         products,
-        getProducts
+        getProducts,
+        loading
     };
 
 };
@@ -146,6 +151,7 @@ export const useProductModal = () => {
                 alert('Product updated successfully');
                 setEditModalVisible(false); // Close the modal
                 handleClose();
+                window.location.reload();
             } else {
                 console.error('Failed to update product');
             }
