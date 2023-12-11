@@ -68,8 +68,12 @@ const Modal = ({ onClose, products }) => {
                                 placeholder="Product Name"
                                 className="input input-bordered"
                                 value={editingProduct.productName}
-                                onChange={(e) => setEditingProduct({ ...editingProduct, productName: e.target.value })}
-
+                                onChange={(e) =>
+                                    setEditingProduct({
+                                        ...editingProduct,
+                                        productName: e.target.value,
+                                    })
+                                }
                             />
                         </div>
                         <div className="form-control">
@@ -81,8 +85,12 @@ const Modal = ({ onClose, products }) => {
                                 placeholder="SKU"
                                 className="input input-bordered"
                                 value={editingProduct.SKU}
-                                onChange={(e) => setEditingProduct({ ...editingProduct, quantity: parseInt(e.target.value, 10) })}
-
+                                onChange={(e) =>
+                                    setEditingProduct({
+                                        ...editingProduct,
+                                        quantity: parseInt(e.target.value, 10),
+                                    })
+                                }
                             />
                         </div>
                         <div className="form-control">
@@ -94,24 +102,78 @@ const Modal = ({ onClose, products }) => {
                                 placeholder="Quantity"
                                 className="input input-bordered"
                                 value={editingProduct.quantity}
-                                onChange={(e) => setEditingProduct({ ...editingProduct, quantity: e.target.value })}
+                                onChange={(e) =>
+                                    setEditingProduct({
+                                        ...editingProduct,
+                                        quantity: e.target.value,
+                                    })
+                                }
                             />
                         </div>
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Price</span>
+                                <span className="label-text">Buying Price</span>
                             </label>
                             <input
                                 type="number"
                                 placeholder="Price"
                                 className="input input-bordered"
-                                value={editingProduct.price}
-                                onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                                value={editingProduct.buyingPrice}
+                                onChange={(e) =>
+                                    setEditingProduct({
+                                        ...editingProduct,
+                                        buyingPrice: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Selling Price</span>
+                            </label>
+                            <input
+                                type="number"
+                                placeholder="Price"
+                                className="input input-bordered"
+                                value={editingProduct.sellingPrice}
+                                onChange={(e) =>
+                                    setEditingProduct({
+                                        ...editingProduct,
+                                        sellingPrice: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Threshold</span>
+                            </label>
+                            <input
+                                type="number"
+                                placeholder="Price"
+                                className="input input-bordered"
+                                value={editingProduct.threshold}
+                                onChange={(e) =>
+                                    setEditingProduct({
+                                        ...editingProduct,
+                                        threshold: e.target.value,
+                                    })
+                                }
                             />
                         </div>
                         <div className="form-control mt-6 gap-4">
-                            <button onClick={handleUpdateProduct} className="btn-primary rounded-lg">Update Product</button>
-                            <button onClick={handleClose} className="btn-error rounded-lg text-white">Close Modal</button>
+                            <button
+                                onClick={handleUpdateProduct}
+                                className="btn btn-primary rounded-lg"
+                            >
+                                Update
+                            </button>
+                            <button
+                                onClick={handleClose}
+                                className="btn btn-error rounded-lg text-white"
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
