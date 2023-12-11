@@ -232,17 +232,51 @@ const Products = () => {
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Buying Price</span>
               </label>
               <input
                 type="number"
                 placeholder="Price"
                 className="input input-bordered"
-                value={editingProduct.price}
+                value={editingProduct.buyingPrice}
                 onChange={(e) =>
                   setEditingProduct({
                     ...editingProduct,
-                    price: e.target.value,
+                    buyingPrice: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Selling Price</span>
+              </label>
+              <input
+                type="number"
+                placeholder="Price"
+                className="input input-bordered"
+                value={editingProduct.sellingPrice}
+                onChange={(e) =>
+                  setEditingProduct({
+                    ...editingProduct,
+                    sellingPrice: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Threshold</span>
+              </label>
+              <input
+                type="number"
+                placeholder="Price"
+                className="input input-bordered"
+                value={editingProduct.threshold}
+                onChange={(e) =>
+                  setEditingProduct({
+                    ...editingProduct,
+                    threshold: e.target.value,
                   })
                 }
               />

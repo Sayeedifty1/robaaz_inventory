@@ -1,4 +1,4 @@
-const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice,selectedCategory) => {
+const logDetails = async (selectedProducts, totalInvoicePrice, totalPrice, selectedCategory) => {
     let totalBuyingPrice = 0;
     selectedProducts.forEach(product => {
         totalBuyingPrice += product.buyingPrice * product.units;
@@ -90,7 +90,7 @@ export const useProducts = () => {
     };
 
 };
- 
+
 // for update modal 
 import { useState } from 'react';
 
@@ -100,7 +100,9 @@ export const useProductModal = () => {
         productName: '',
         SKU: '',
         quantity: 0,
-        price: 0,
+        buyingPrice: 0,
+        sellingPrice: 0,
+        threshold: 0,
     });
 
     const handleEdit = (product) => {
@@ -113,7 +115,9 @@ export const useProductModal = () => {
             productName: '',
             SKU: '',
             quantity: 0,
-            price: 0,
+            buyingPrice: 0,
+            sellingPrice: 0,
+            threshold: 0,
         });
         setEditModalVisible(false);
     };
@@ -123,7 +127,9 @@ export const useProductModal = () => {
             productName: editingProduct.productName,
             SKU: editingProduct.SKU,
             quantity: parseInt(editingProduct.quantity, 10), // Convert to integer
-            price: parseFloat(editingProduct.price), // Convert to float
+            buyingPrice: parseFloat(editingProduct.buyingPrice), // Convert to float
+            sellingPrice: parseFloat(editingProduct.sellingPrice), // Convert to float
+            threshold: parseFloat(editingProduct.threshold), // Convert to float
         };
 
         try {
