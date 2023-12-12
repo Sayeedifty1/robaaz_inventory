@@ -278,8 +278,8 @@ console.log(product.sellingPrice)
               onChange={(e) => setSearchQuotation(e.target.value)}
             />
             <button
-              onClick={fetchQuotation()}
-              className="bg-blue-300 p-1  rounded-lg hidden text-white"
+              onClick={()=>fetchQuotation()}
+              className="bg-blue-300 p-1  rounded-lg text-white"
             >
               Search
             </button>
