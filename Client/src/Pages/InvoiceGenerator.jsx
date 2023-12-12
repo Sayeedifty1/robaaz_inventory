@@ -239,7 +239,7 @@ const InvoiceGenerator = () => {
     // Create a new array with the updated product
     const newSelectedProducts = [...selectedProducts];
     newSelectedProducts[productIndex] = { ...product, sellingPrice: newPrice };
-
+console.log(product.sellingPrice)
     // Update the state and local storage
     setSelectedProducts(newSelectedProducts);
     localStorage.setItem(
@@ -465,7 +465,7 @@ const InvoiceGenerator = () => {
                   }
                 />
               </td>
-              <td className="border">{product.totalPrice || 0}</td>
+              <td className="border">{totalPrice}</td>
             </tr>
           ))}
           <tr className="border">
